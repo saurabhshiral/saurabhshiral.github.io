@@ -114,9 +114,11 @@
     return { toggle: toggle, current: current };
   })();
 
-  /* ── Ledger: expanding index rows ──────────────────────────────────── */
-  var ledger = (function () {
-    var rows = $$('.row__btn');
+  /* ── Disclosure: expanding ledger rows and prose units ─────────────────
+     One implementation drives both. Any button carrying [data-disclose] with
+     aria-controls pointing at a panel gets height-animated open/closed. */
+  var disclosure = (function () {
+    var rows = $$('[data-disclose]');
 
     var OPEN_MS = 320;
     var CLOSE_MS = 260;
@@ -202,15 +204,16 @@
     });
 
     return {
-      openById: function (id) {
-        var btn = $$('.row__btn').filter(function (b) {
-          return b.closest('.row') && b.closest('.row').id === id;
-        })[0];
+      /* Open the disclosure inside a given container (a ledger row, a unit). */
+      openIn: function (containerEl) {
+        var btn = $('[data-disclose]', containerEl);
         if (btn) open(btn);
       },
-      openIn: function (rowEl) {
-        var btn = $('.row__btn', rowEl);
-        if (btn) open(btn);
+      openAll: function (selector) {
+        $$(selector).forEach(function (el) {
+          var btn = $('[data-disclose]', el);
+          if (btn) open(btn);
+        });
       }
     };
   })();
@@ -244,12 +247,18 @@
       });
     });
 
-    $$('.row[data-project]').forEach(function (row) {
-      items.push({
-        name: row.getAttribute('data-project'),
-        kind: row.getAttribute('data-kind') || 'Index',
-        group: 'Index of works',
-        run: function () { goTo(row); ledger.openIn(row); }
+    /* Ledger rows appear in two sections; keep them in separate palette
+       buckets so an engagement never looks like a side project. */
+    [['#index .row[data-project]', 'Index of works'],
+     ['#practice .row[data-project]', 'The practice']
+    ].forEach(function (pair) {
+      $$(pair[0]).forEach(function (row) {
+        items.push({
+          name: row.getAttribute('data-project'),
+          kind: row.getAttribute('data-kind') || 'Index',
+          group: pair[1],
+          run: function () { goTo(row); disclosure.openIn(row); }
+        });
       });
     });
 
@@ -275,8 +284,13 @@
         run: function () {
           var idx = document.getElementById('index');
           if (idx) goTo(idx);
-          $$('.row').forEach(function (row) { ledger.openIn(row); });
+          disclosure.openAll('#index .row');
         }
+      },
+      {
+        name: 'Expand everything on the page',
+        kind: 'Command', group: 'Commands',
+        run: function () { disclosure.openAll('.row, .unit--deep'); }
       },
       {
         name: 'Back to top',

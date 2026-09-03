@@ -43,7 +43,7 @@
   --step-3:  clamp(1.728rem, 1.58rem + 0.74vw, 2.25rem);
   --step-4:  clamp(2.074rem, 1.83rem + 1.22vw, 3rem);
   --step-5:  clamp(2.488rem, 2.08rem + 2.04vw, 4rem);
-  --display: clamp(3.6rem, 15vw, 12.5rem);
+  --display: clamp(3.6rem, 13.5vw, 15rem);
 
   /* --- Measure & rhythm ----------------------------------------------- */
   --measure: 68ch;
@@ -59,7 +59,7 @@
   --space-3xl: 8rem;
 
   --gutter: clamp(1.25rem, 4.5vw, 4.5rem);
-  --page-max: 82rem;
+  --page-max: 90rem;
 
   /* --- Motion --------------------------------------------------------- */
   --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
