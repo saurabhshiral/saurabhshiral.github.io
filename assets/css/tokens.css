@@ -43,7 +43,11 @@
   --step-3:  clamp(1.728rem, 1.58rem + 0.74vw, 2.25rem);
   --step-4:  clamp(2.074rem, 1.83rem + 1.22vw, 3rem);
   --step-5:  clamp(2.488rem, 2.08rem + 2.04vw, 4rem);
-  --display: clamp(3.6rem, 13.5vw, 15rem);
+  /* Height-aware on purpose. A width-only clamp produced a 203px masthead on a
+     754px-tall viewport, which pushed the lede below the fold and clipped it
+     mid-sentence. The vh term keeps two lines of display type to ~36% of the
+     viewport height so the standfirst always survives the first screen. */
+  --display: clamp(3.6rem, min(13.5vw, 21vh), 15rem);
 
   /* --- Measure & rhythm ----------------------------------------------- */
   --measure: 68ch;

@@ -265,7 +265,7 @@ code {
 .masthead {
   max-width: var(--page-max);
   margin-inline: auto;
-  padding: clamp(2.5rem, 7vh, 5.5rem) var(--gutter) var(--space-xl);
+  padding: clamp(1.75rem, 6vh, 5.5rem) var(--gutter) clamp(1.5rem, 4vh, 3.5rem);
   min-height: min(84svh, 44rem);
   display: flex;
   flex-direction: column;
@@ -287,7 +287,7 @@ code {
 .masthead__kicker i { color: var(--accent); font-style: normal; }
 
 .masthead__name {
-  margin-top: clamp(1rem, 3vh, 2.5rem);
+  margin-top: clamp(0.5rem, 2.5vh, 2.5rem);
   font-size: var(--display);
   font-weight: 500;
   line-height: 0.86;
@@ -316,7 +316,7 @@ code {
 
 .masthead__foot {
   margin-top: auto;
-  padding-top: var(--space-xl);
+  padding-top: clamp(1.5rem, 4vh, 3.5rem);
   display: grid;
   gap: var(--space-l);
   grid-template-columns: minmax(0, 1fr);
@@ -365,7 +365,7 @@ code {
 .masthead__facts dd { font-size: var(--step--1); color: var(--ink-2); }
 
 .scroll-cue {
-  margin-top: var(--space-l);
+  margin-top: clamp(1rem, 2.5vh, 2.25rem);
   font-family: var(--font-mono);
   font-size: var(--step--2);
   text-transform: uppercase;
@@ -388,6 +388,16 @@ code {
     0%, 100% { opacity: 0.45; }
     50% { opacity: 1; }
   }
+}
+
+/* Short landscape viewports — small laptops, and wide windows at 110-150%
+   browser zoom. The hero is allowed to be shorter than a full screen here;
+   what is not allowed is the lede or the fact table getting cut. Shed the
+   decorative cue, drop the full-height floor, and ease the lede down a step. */
+@media (max-height: 46rem) and (min-width: 48rem) {
+  .masthead { min-height: 0; }
+  .scroll-cue { display: none; }
+  .standfirst { font-size: clamp(1.05rem, 0.95rem + 0.55vw, 1.4rem); }
 }
 
 /* ── Section heads ─────────────────────────────────────────────────────── */

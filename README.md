@@ -98,6 +98,9 @@ claim one. Nothing on the page asserts an outcome that isn't in a source documen
 - Scroll reveals are opt-in via a `.js` class set before first paint, with a 2.5s timeout
   fallback, so failed or blocked JavaScript can never leave content invisible
 - Every animation sits behind `prefers-reduced-motion`
-- Verified at 320 / 375 / 414 / 768 / 1440 / 2275 px with zero overflowing elements
-  (2275px is the layout viewport at 80% browser zoom on a wide monitor)
+- Verified at 320 / 375 / 414 / 768 / 994 / 1250 / 1473 / 1425 / 1905 / 2275 px with zero
+  overflowing elements (the wide values are layout viewports at 80-125% browser zoom)
+- The masthead is checked against the fold, not just for overflow: display type is clamped
+  on `min(13.5vw, 21vh)` so the lede and fact table clear the first screen on every tested
+  landscape viewport down to 1009x640
 - Print stylesheet expands all rows and prints link targets, so ⌘P gives a usable CV
