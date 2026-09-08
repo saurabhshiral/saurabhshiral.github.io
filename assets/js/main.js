@@ -116,6 +116,8 @@
 
   /* ── Active section in the running head ────────────────────────────── */
   (function activeNav() {
+    // The continuous journey owns chapter state when its navigation is present.
+    if (document.querySelector('.chapter-nav')) return;
     var links = $$('.runhead__nav a');
     if (!links.length || !('IntersectionObserver' in window)) return;
 
@@ -152,8 +154,8 @@
     function apply(next) {
       root.setAttribute('data-theme', next);
       try { localStorage.setItem('theme', next); } catch (e) { /* private mode */ }
-      var meta = $('meta[name="theme-color"]');
-      if (meta) meta.setAttribute('content', next === 'dark' ? '#14120F' : '#FBF9F5');
+      var color = getComputedStyle(root).getPropertyValue('--paper').trim();
+      $$('meta[name="theme-color"]').forEach(function (meta) { meta.setAttribute('content', color); });
     }
     function toggle() { apply(current() === 'dark' ? 'light' : 'dark'); }
 
@@ -357,7 +359,10 @@
       {
         name: 'Expand everything on the page',
         kind: 'Command', group: 'Commands',
-        run: function () { disclosure.openAll('.row, .unit--deep'); }
+        run: function () {
+          $$('details').forEach(function (detail) { detail.open = true; });
+          disclosure.openAll('.row, .unit--deep');
+        }
       },
       {
         name: 'Back to top',

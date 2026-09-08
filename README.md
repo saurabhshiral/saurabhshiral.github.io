@@ -1,153 +1,111 @@
-# saurabhshiral.github.io
+﻿# saurabhshiral.github.io
 
-Personal site — [saurabhshiral.github.io](https://saurabhshiral.github.io/)
-
-Static HTML, CSS and vanilla JavaScript. No framework, no build step, no dependencies,
-no tracking. Push to `main` and GitHub Pages serves it.
+Personal site: [saurabhshiral.github.io](https://saurabhshiral.github.io/).
+Static HTML, CSS and vanilla JavaScript. No build step, runtime libraries, tracking,
+or third-party font requests. GitHub Actions publishes pushes to `main` to Pages.
 
 ## Design
 
-**Editorial Broadsheet** — typography as the primary interface, in the tradition of print
-feature writing rather than the card-grid portfolio. Three grafts onto that spine:
+A navy, coral and mint opening leads into visual project stories, a biography,
+project index, career timeline, technology stack and contact section. Geist handles
+body text and headings, Fraunces the display accent, and Geist Mono the metadata.
+All fonts are self-hosted.
 
-| Element | Why |
-| --- | --- |
-| Feature articles in **labelled units** | Each project reads in three tiers — deck (5s), labelled blocks (20s), then a disclosure for the deep detail. Undifferentiated prose is a wall; mono margin labels make the structure legible before a word is read |
-| Two expanding **ledgers** | One for side projects, one for client engagements. Twenty-second value for anyone who won't read prose — one row each, opens in place, never navigates away |
-| A **⌘K command palette** | Keyboard-first navigation. Its index is built from the DOM, so it cannot drift from the content |
+The original Canvas 2D illustration projects a three-dimensional data field: 147
+points assemble into three platform layers, followed by moving signals. Ingest,
+Build and Run buttons let visitors explore the stages. Pointer movement adds a
+small change in perspective. Content and actions are available immediately.
 
-Light is the canonical theme. Dark is a courtesy variant driven by
-`prefers-color-scheme`, overridable by the toggle and remembered in `localStorage`.
+The canvas caps pixel density at 1.5 and updates at approximately 30 frames per
+second. It stops outside the viewport, in background tabs, when paused, or when
+reduced motion is requested. A static SVG remains available without JavaScript
+or a canvas context. The animation is an illustration, not live telemetry.
 
-- **Display type** — Fraunces (variable, `opsz` 9–144). The masthead animates along the
-  optical-size axis on load, so the letterforms resolve into their display cut.
-- **Body / UI** — Geist. **Metadata** — Geist Mono.
-- **Palette** — warm paper `#FBF9F5`, ink `#16130F`, vermilion `#D6431F`. Body-size accent
-  text uses `#A32F12` to hold 6.7:1 contrast.
+The six-stop header navigator and continuous margin thread follow native scrolling
+in both directions. Their positions update after font loading, viewport changes
+and disclosure resizing. One scheduled frame updates the thread and chapter state.
+Reduced motion shows the complete static line with discrete chapter updates.
 
-All three fonts are self-hosted variable `woff2` files (~120 KB total) — no request to
-Google Fonts, no third-party dependency at runtime.
+Project cards provide a short summary and visual preview before a native HTML
+`details` element containing the full case study. Other index and career rows use
+button disclosures. The command palette indexes the HTML and can expand all detail.
+Light and dark themes and the motion preference are remembered locally.
 
-## Layout
+## Files
 
-```
-index.html               all content — semantic, crawlable, readable with JS off
-assets/css/tokens.css    fonts + colour + type scale + motion tokens
-assets/css/styles.css    everything else; references tokens only
-assets/js/main.js        progress, reveals, disclosures, theme, ⌘K
-assets/fonts/*.woff2     self-hosted variable fonts, latin subset
-assets/img/              favicon.svg, og.png
-```
-
-Sections: masthead · About · Selected work (3 features) · Index of works (side projects) ·
-The practice (6 client engagements + certifications) · What I reach for (two stacks) ·
-Contact · colophon.
-
-## Run locally
-
-No tooling required. Open `index.html` in a browser, or serve it to get correct font
-paths and relative URLs:
-
-```bash
-python -m http.server 8000
-# or
-npx serve .
+```text
+index.html                semantic content and decorative SVG fallback
+assets/css/tokens.css     base fonts, type scale and motion tokens
+assets/css/styles.css     base layout and shared components
+assets/css/journey.css    connected chapter navigation and margin thread
+assets/css/studio.css     current palette, opening scene and visual project layout
+assets/js/main.js         disclosures, theme, pause, reveals and command palette
+assets/js/journey.js      reading position, thread geometry and chapter state
+assets/js/studio.js       interactive canvas illustration and print disclosures
+assets/fonts/             self-hosted variable fonts
+assets/img/               favicon, social image and project previews
 ```
 
-## Editing
+## Preview provenance
 
-- **Copy, projects and engagements** live directly in `index.html`. There is no data layer
-  to keep in sync — the ⌘K palette and the section nav both read the DOM.
-- **A new feature article**: copy an `<article class="feature">` block. The alternating
-  gutter side is handled by `:nth-of-type(even)` in CSS, so ordering takes care of itself.
-- **A new index row or engagement**: copy an `<li class="row">`. Give the `.row__panel` a
-  unique `id` and point the button's `aria-controls` at it.
-- **Any new expander**: put `data-disclose` on the button and `aria-controls` on the panel —
-  one implementation in `main.js` drives ledger rows and prose units alike.
-- **Colours or type**: change `assets/css/tokens.css` only. No colour or `font-family`
-  value is hard-coded anywhere in `styles.css`.
+- `pse-preview.png`: screenshot of the public PSE Intel interface populated with
+  the project's existing archived August 2026 JSON. The preview caption identifies
+  the archive; it is not presented as current news.
+- `vatavaran-preview.png`: screenshot of the public Vatavaran interface using its
+  own built-in demo dataset. The caption explicitly identifies the demo data.
+- DR Grand Prix: original inline SVG workflow illustration, explicitly labelled
+  as an illustration because the project is private.
 
-## Sources, and what is deliberately left out
+## Reference study
+
+Reviewed [Bruno Simon's portfolio repository](https://github.com/brunosimon/folio-2019),
+[Cuberto's particles repository](https://github.com/Cuberto/particles),
+[pmndrs/drei](https://github.com/pmndrs/drei), [Lusion](https://lusion.co/), and
+[Dennis Snellenberg](https://dennissnellenberg.com/) for interactive openings and
+visual storytelling. Earlier navigation study included
+[Brittany Chiang](https://brittanychiang.com/) and [Rauno Freiberg](https://rauno.me/).
+The design and canvas implementation here are original; no source code or artwork
+was copied from these references. X searches did not provide usable post content.
+
+## Run and edit
+
+Serve the repository, for example with `python -m http.server 8000`.
+Copy, project summaries and career details live directly in `index.html`.
+Current colours and layout overrides live in `assets/css/studio.css`.
+New native disclosures use `details` and `summary`. For ledger disclosures, provide
+`data-disclose` and `aria-controls` on a button pointing to a unique panel ID.
+
+## Sources and confidentiality
 
 Career history, education, sectors and the enterprise stack come from
-`Saurabh_Shiral_Data_Analytics_2025.docx`. Scope for the current engagement comes from the
-FY26 crib sheet. Project detail comes from each project's own repository.
+`Saurabh_Shiral_Data_Analytics_2025.docx`. Scope for the current engagement comes
+from the FY26 crib sheet. Project detail comes from each project's own repository.
 
-**Client confidentiality.** Engagements are described by sector — "a Pacific Northwest
-utility", "a global steel producer" — rather than named. Clients are Accenture's to
-announce, not mine. Deliberately excluded from this public page, and belonging only in
-Workday:
+Engagements are described by sector rather than client name. Excluded from the
+public site: revenue, ROM, deal and capitalization figures; incident and ticket
+counts and SLA detail; internal system, programme and vendor names; colleague
+names and other employees' performance information. No invented outcome metrics.
 
-- revenue, ROM, deal and capitalization figures
-- incident / RITM / ticket counts and SLA detail
-- internal system, programme and vendor names
-- every colleague name, and any other employee's performance or talent-cycle information
+## Accessibility and validation
 
-**No invented metrics.** Where a number isn't known or isn't publishable, the copy doesn't
-claim one. Nothing on the page asserts an outcome that isn't in a source document.
+Semantic landmarks, skip link, visible keyboard focus, native detail disclosures,
+and a native dialog command palette. Custom disclosures expose `aria-expanded`
+and `aria-controls`, with hidden panels removed from the accessibility tree.
+Interrupted transitions settle through a completion listener or fallback timer.
 
-## Accessibility & performance
+The header pause control covers continuous and entrance motion. The OS reduced
+motion setting takes precedence. Canvas controls stay usable in reduced motion.
+The page remains navigable and readable without JavaScript; print opens the full
+case studies and restores disclosure state afterwards.
 
-- Semantic landmarks, skip link, visible `:focus-visible` on every interactive element
-- Every disclosure is a real `<button>` with `aria-expanded` / `aria-controls`; panels carry
-  `hidden` when collapsed so screen readers skip them. The collapse settles on
-  `transitionend` **or** a timer, so an interrupted transition can never leave a
-  visually-collapsed panel exposed to assistive tech
-- ⌘K is a native `<dialog>` — focus trapping and Esc come free — wired as a
-  `combobox`/`listbox` with `aria-activedescendant`
-- Scroll reveals are opt-in via a `.js` class set before first paint, with a 2.5s timeout
-  fallback, so failed or blocked JavaScript can never leave content invisible
-- Every animation sits behind `prefers-reduced-motion`
-- Verified at 320 / 375 / 414 / 768 / 994 / 1250 / 1473 / 1425 / 1905 / 2275 px with zero
-  overflowing elements (the wide values are layout viewports at 80-125% browser zoom)
-- The masthead is checked against the fold, not just for overflow: display type is clamped
-  on `min(13.5vw, 21vh)` so the lede and fact table clear the first screen on every tested
-  landscape viewport down to 1009x640
-- Print stylesheet expands all rows and prints link targets, so ⌘P gives a usable CV
-
-
-## Motion update
-
-The desktop masthead includes a schematic of the build-and-run journey. Its moving
-signal is decorative, not live telemetry. The pause control in the header remembers
-the visitor's choice; the operating-system reduced-motion setting always takes
-precedence. The diagram runs only while visible in an active tab. Below 76rem it is
-omitted to keep the masthead focused on the name, introduction and facts.
-
-The entrance sequence and section-heading reveals use short, finite transitions.
-The existing read-on cue now stops after two cycles. Reading progress uses a transform
-and updates when disclosures change the page height.
-
-Disclosure completion is tracked per panel so opening or closing several rows does
-not interrupt another panel's cleanup. Run the regression checks with:
+Validation for this edition: Chromium at 320x740, 375x812, 768x1024, 1009x640,
+1440x900 and 1920x1080; horizontal overflow and visible hero actions on landscape
+screens; canvas intro and keyboard stage selection; pause and reduced-motion
+stability; chapter state after resizing and scrolling; disclosure/thread resizing;
+project image loading; dark theme; printing; JavaScript-disabled content; and
+browser runtime errors. Browser scripts and screenshots live in ignored `_review/`.
+The disclosure regression suite is retained in the repository:
 
 ```bash
 node tests/disclosure.cjs
 ```
-
-Validation for this update: JavaScript syntax and the disclosure regression harness
-passed in a JavaScript runtime. Duplicate IDs and disclosure targets were checked.
-Browser rendering for the complete site is covered by the connected-journey checks below.
-
-## Connected reading journey
-
-A vermilion margin thread runs from the introduction through Contact. Its drawn
-length and reading marker follow native scrolling in both directions. The six-stop
-chapter navigator stays in the header, links directly to each section, and shares
-its active state with the thread. No scroll interception or animation dependency.
-
-`assets/js/journey.js` measures section positions after fonts load, viewport changes,
-and disclosure resizing. One scheduled frame updates the line and chapter state.
-Reduced motion or Pause shows a static line with discrete chapter updates. Navigation
-works without JavaScript; the decorative thread is omitted from print.
-
-Reference study: [Brittany Chiang](https://brittanychiang.com/),
-[Rauno Freiberg](https://rauno.me/), and [Bruno Simon](https://bruno-simon.com/).
-These informed the direction toward clear navigation, careful interaction, and a
-continuous journey. The implementation and visual treatment here are original.
-
-Browser validation: Chromium at 320x740, 375x812, 768x1024, 1009x640, 1440x900,
-and 1920x1080. All six chapter links, header clearance, horizontal overflow, 44px
-chapter targets, disclosure expansion/collapse, pause, OS reduced motion, dark theme,
-print, JavaScript-disabled navigation and browser errors were checked. The existing
-disclosure regression checks also pass.
