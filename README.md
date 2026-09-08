@@ -104,3 +104,29 @@ claim one. Nothing on the page asserts an outcome that isn't in a source documen
   on `min(13.5vw, 21vh)` so the lede and fact table clear the first screen on every tested
   landscape viewport down to 1009x640
 - Print stylesheet expands all rows and prints link targets, so ⌘P gives a usable CV
+
+
+## Motion update
+
+The desktop masthead includes a schematic of the build-and-run journey. Its moving
+signal is decorative, not live telemetry. The pause control in the header remembers
+the visitor's choice; the operating-system reduced-motion setting always takes
+precedence. The diagram runs only while visible in an active tab. Below 76rem it is
+omitted to keep the masthead focused on the name, introduction and facts.
+
+The entrance sequence and section-heading reveals use short, finite transitions.
+The existing read-on cue now stops after two cycles. Reading progress uses a transform
+and updates when disclosures change the page height.
+
+Disclosure completion is tracked per panel so opening or closing several rows does
+not interrupt another panel's cleanup. Run the regression checks with:
+
+```bash
+node tests/disclosure.cjs
+```
+
+Validation for this update: JavaScript syntax and the disclosure regression harness
+passed in a JavaScript runtime. Duplicate IDs and disclosure targets were checked.
+Browser rendering is pending: review light/dark themes, keyboard navigation, pause
+and OS reduced motion, print, and narrow/short/zoomed viewports before merging.
+The earlier viewport verification above describes the previous layout.

@@ -256,7 +256,8 @@ code {
 .progress__bar {
   display: block;
   height: 100%;
-  width: 0;
+  width: 100%;
+  transform: scaleX(0);
   background: var(--accent);
   transform-origin: left;
 }
@@ -383,7 +384,7 @@ code {
   background: var(--rule);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .scroll-cue span { animation: cue 2.6s var(--ease-out) infinite; }
+  .scroll-cue span { animation: cue 2.4s var(--ease-out) 2; }
   @keyframes cue {
     0%, 100% { opacity: 0.45; }
     50% { opacity: 1; }
@@ -1162,12 +1163,85 @@ code {
   .js [data-reveal].is-in { opacity: 1; transform: none; }
 }
 
+
+/* ── Motion: a living diagram, paced entrances, tactile controls ────────── */
+.masthead__display { min-width: 0; }
+.data-flow { display: none; }
+.motion-btn {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--ink-3);
+}
+.motion-btn[hidden] { display: none; }
+.motion-btn svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.motion-btn__play { display: none; }
+.motion-btn[aria-pressed='true'] .motion-btn__pause { display: none; }
+.motion-btn[aria-pressed='true'] .motion-btn__play { display: block; }
+.motion-btn:disabled { cursor: default; opacity: 0.6; }
+.runhead__nav a:focus-visible::after { transform: scaleX(1); }
+@media (pointer: coarse) {
+  .theme-btn, .motion-btn { width: 2.75rem; height: 2.75rem; }
+  .cmdk-hint { min-height: 2.75rem; }
+}
+@media (min-width: 76rem) {
+  .masthead__display {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(13rem, 20vw, 18rem);
+    align-items: center;
+    gap: var(--space-l);
+  }
+  .data-flow { display: block; color: var(--ink-3); }
+  .data-flow svg { width: 100%; overflow: visible; }
+  .data-flow__track { fill: none; stroke: var(--rule); stroke-width: 1; }
+  .data-flow__signal { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 24 740; }
+  .data-flow__node { fill: var(--paper); stroke: var(--accent); stroke-width: 1.5; }
+  .data-flow__labels { fill: currentColor; font: 10px var(--font-mono); letter-spacing: 0.5px; }
+  .data-flow figcaption { font: var(--step--2) var(--font-mono); text-align: center; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .masthead__kicker { animation: editorial-in 600ms var(--ease-out) both; }
+  .standfirst { animation: editorial-in 700ms 180ms var(--ease-out) both; }
+  .masthead__facts { animation: editorial-in 700ms 280ms var(--ease-out) both; }
+  .data-flow { animation: editorial-in 800ms 350ms var(--ease-out) both; }
+  .js .data-flow.is-running .data-flow__signal { animation: data-travel 5s linear infinite; }
+  .section__head.is-in .rubric { animation: editorial-in 500ms var(--ease-out) both; }
+  .section__head.is-in .section__title { animation: editorial-in 650ms 70ms var(--ease-out) both; }
+  .theme-btn svg { transition: transform var(--dur) var(--ease-out); }
+  .theme-btn:is(:hover, :focus-visible) svg { transform: rotate(18deg); }
+  .row__title { transition: transform var(--dur) var(--ease-out); }
+  .row__btn:is(:hover, :focus-visible) .row__title { transform: translateX(4px); }
+  .btn:focus-visible span { transform: translate(2px, -2px); }
+  @keyframes editorial-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes data-travel { to { stroke-dashoffset: -764; } }
+}
+/* Both the operating-system setting and the explicit pause control win over
+   all decorative motion, including existing reveals and hover transitions. */
+:root[data-motion='off'] { scroll-behavior: auto; }
+:root[data-motion='off'] *, :root[data-motion='off'] *::before, :root[data-motion='off'] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+:root[data-motion='off'] [data-reveal] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  [data-reveal] { opacity: 1; transform: none; }
+}
+
 /* ── Print ─────────────────────────────────────────────────────────────── */
 @media print {
   .runhead, .grain, .scroll-cue, .cmdk, .skip { display: none !important; }
   body { background: #fff; color: #000; }
   [data-reveal] { opacity: 1 !important; transform: none !important; }
   .feature, .section { page-break-inside: avoid; }
-  .row__panel { display: block !important; }
+  .row__panel, .unit--deep .unit__body { display: block !important; height: auto !important; opacity: 1 !important; }
+  .data-flow, .motion-btn { display: none !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
   a[target='_blank']::after { content: ' (' attr(href) ')'; font-size: 0.75em; color: #555; }
 }
