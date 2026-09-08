@@ -6,7 +6,8 @@
 (function () {
   'use strict';
 
-  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var reduceMotion = motionMedia.matches || document.documentElement.dataset.motion === 'off';
   var isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);
 
   /* Tells the inline head script that this file parsed and ran, so it does not
@@ -16,6 +17,54 @@
   /* ── Small helpers ─────────────────────────────────────────────────── */
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+
+  /* Motion is optional, persistent, and responsive to OS changes at runtime.
+     The diagram only runs while it is on screen and the tab is visible. */
+  (function motion() {
+    var root = document.documentElement;
+    var button = $('[data-motion-toggle]');
+    var diagram = $('.data-flow');
+    var inView = false;
+
+    function paintDiagram() {
+      if (diagram) diagram.classList.toggle('is-running', inView && !document.hidden && !reduceMotion);
+    }
+    function update() {
+      reduceMotion = motionMedia.matches || root.dataset.motion === 'off';
+      if (button) {
+        button.hidden = false;
+        button.disabled = motionMedia.matches;
+        button.setAttribute('aria-pressed', String(reduceMotion));
+        var label = motionMedia.matches ? 'Animations disabled by system preference' :
+          (reduceMotion ? 'Resume animations' : 'Pause animations');
+        button.setAttribute('aria-label', label);
+        button.title = label;
+      }
+      if (reduceMotion) {
+        $$('[data-reveal]').forEach(function (el) { el.classList.add('is-in'); });
+        if (disclosure) disclosure.settleAll();
+      }
+      paintDiagram();
+    }
+    if (button) button.addEventListener('click', function () {
+      if (root.dataset.motion === 'off') delete root.dataset.motion;
+      else root.dataset.motion = 'off';
+      try { localStorage.setItem('motion', root.dataset.motion || 'on'); } catch (e) { /* private mode */ }
+      update();
+    });
+    if (motionMedia.addEventListener) motionMedia.addEventListener('change', update);
+    else if (motionMedia.addListener) motionMedia.addListener(update);
+    if (diagram && 'IntersectionObserver' in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        inView = entries[0].isIntersecting;
+        paintDiagram();
+      });
+      observer.observe(diagram);
+    }
+    document.addEventListener('visibilitychange', paintDiagram);
+    update();
+  })();
 
   /* ── Footer year + platform-correct modifier key ───────────────────── */
   $$('[data-year]').forEach(function (el) { el.textContent = String(new Date().getFullYear()); });
@@ -33,13 +82,14 @@
       var doc = document.documentElement;
       var max = doc.scrollHeight - window.innerHeight;
       var pct = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      bar.style.width = (pct * 100).toFixed(2) + '%';
+      bar.style.transform = 'scaleX(' + pct.toFixed(4) + ')';
     }
     function onScroll() {
       if (!queued) { queued = true; requestAnimationFrame(paint); }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll, { passive: true });
+    if ('ResizeObserver' in window) new ResizeObserver(onScroll).observe(document.body);
     paint();
   })();
 
@@ -122,7 +172,12 @@
 
     var OPEN_MS = 320;
     var CLOSE_MS = 260;
-    var seq = 0;               /* guards against a fast toggle finishing out of order */
+    var sequences = new WeakMap();  /* each panel settles independently */
+    function nextSequence(panel) {
+      var token = (sequences.get(panel) || 0) + 1;
+      sequences.set(panel, token);
+      return token;
+    }
 
     function panelOf(btn) {
       return document.getElementById(btn.getAttribute('aria-controls'));
@@ -136,20 +191,21 @@
     function afterHeight(panel, ms, token, settle) {
       var done = false;
       function finish() {
-        if (done || token !== seq) return;
+        if (done) return;
         done = true;
+        clearTimeout(timer);
         panel.removeEventListener('transitionend', onEnd);
-        settle();
+        if (token === sequences.get(panel)) settle();
       }
-      function onEnd(e) { if (e.propertyName === 'height') finish(); }
+      function onEnd(e) { if (e.target === panel && e.propertyName === 'height') finish(); }
       panel.addEventListener('transitionend', onEnd);
-      setTimeout(finish, ms + 80);
+      var timer = setTimeout(finish, ms + 80);
     }
 
     function open(btn) {
       var panel = panelOf(btn);
       if (!panel || btn.getAttribute('aria-expanded') === 'true') return;
-      var token = ++seq;
+      var token = nextSequence(panel);
       btn.setAttribute('aria-expanded', 'true');
       panel.hidden = false;
 
@@ -177,7 +233,7 @@
     function close(btn) {
       var panel = panelOf(btn);
       if (!panel || btn.getAttribute('aria-expanded') !== 'true') return;
-      var token = ++seq;
+      var token = nextSequence(panel);
       btn.setAttribute('aria-expanded', 'false');
 
       function settle() {
@@ -204,6 +260,17 @@
     });
 
     return {
+      settleAll: function () {
+        rows.forEach(function (btn) {
+          var panel = panelOf(btn);
+          if (!panel) return;
+          nextSequence(panel);
+          panel.style.transition = '';
+          panel.style.height = '';
+          panel.style.opacity = '';
+          panel.hidden = btn.getAttribute('aria-expanded') !== 'true';
+        });
+      },
       /* Open the disclosure inside a given container (a ledger row, a unit). */
       openIn: function (containerEl) {
         var btn = $('[data-disclose]', containerEl);

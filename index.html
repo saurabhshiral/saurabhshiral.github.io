@@ -56,6 +56,7 @@
   (function () {
     document.documentElement.classList.add('js');
     try {
+      if (localStorage.getItem('motion') === 'off') document.documentElement.dataset.motion = 'off';
       var s = localStorage.getItem('theme');
       if (s === 'dark' || s === 'light') { document.documentElement.dataset.theme = s; }
     } catch (e) { /* private mode — fall back to prefers-color-scheme */ }
@@ -93,6 +94,9 @@
         <span class="cmdk-hint__label">Search</span>
         <kbd class="cmdk-hint__keys"><span data-mod-key>⌘</span>K</kbd>
       </button>
+      <button class="motion-btn" data-motion-toggle type="button" aria-label="Pause animations" aria-pressed="false" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="motion-btn__pause" d="M9 5v14M15 5v14"/><path class="motion-btn__play" d="m9 5 10 7-10 7Z"/></svg>
+      </button>
       <button class="theme-btn" data-theme-toggle type="button" aria-label="Switch colour theme">
         <svg class="theme-btn__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.6v2.4M12 19.2v2.4M2.6 12h2.4M19.2 12h2.4M5.4 5.4l1.7 1.7M16.9 16.9l1.7 1.7M18.6 5.4l-1.7 1.7M7.1 16.9l-1.7 1.7"/></svg>
         <svg class="theme-btn__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.4 14.6A8.6 8.6 0 1 1 9.4 3.6a6.9 6.9 0 0 0 11 11Z"/></svg>
@@ -111,10 +115,21 @@
     <span>Portfolio</span><i aria-hidden="true">·</i><span>Pacific Northwest</span><i aria-hidden="true">·</i><span>Est. 2012</span>
   </p>
 
+  <div class="masthead__display">
   <h1 class="masthead__name" id="masthead-name">
     <span class="masthead__line">Saurabh</span>
     <span class="masthead__line">Shiral</span>
   </h1>
+  <figure class="data-flow" aria-label="Build and run: SAP estates, modern data platforms, and ongoing operations">
+    <svg viewBox="0 0 280 220" aria-hidden="true" focusable="false">
+      <path class="data-flow__track" d="M36 40H244V110H36V180H244"/>
+      <path class="data-flow__signal" d="M36 40H244V110H36V180H244"/>
+      <g class="data-flow__node"><circle cx="36" cy="40" r="6"/><circle cx="244" cy="110" r="6"/><circle cx="36" cy="180" r="6"/></g>
+      <g class="data-flow__labels"><text x="54" y="31">01 / SAP ESTATE</text><text x="36" y="101">02 / MODERN PLATFORM</text><text x="54" y="171">03 / RUN &amp; IMPROVE</text></g>
+    </svg>
+    <figcaption>Build it. Run it. Make it legible.</figcaption>
+  </figure>
+  </div>
 
   <div class="masthead__foot">
     <p class="standfirst">
