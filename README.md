@@ -127,6 +127,27 @@ node tests/disclosure.cjs
 
 Validation for this update: JavaScript syntax and the disclosure regression harness
 passed in a JavaScript runtime. Duplicate IDs and disclosure targets were checked.
-Browser rendering is pending: review light/dark themes, keyboard navigation, pause
-and OS reduced motion, print, and narrow/short/zoomed viewports before merging.
-The earlier viewport verification above describes the previous layout.
+Browser rendering for the complete site is covered by the connected-journey checks below.
+
+## Connected reading journey
+
+A vermilion margin thread runs from the introduction through Contact. Its drawn
+length and reading marker follow native scrolling in both directions. The six-stop
+chapter navigator stays in the header, links directly to each section, and shares
+its active state with the thread. No scroll interception or animation dependency.
+
+`assets/js/journey.js` measures section positions after fonts load, viewport changes,
+and disclosure resizing. One scheduled frame updates the line and chapter state.
+Reduced motion or Pause shows a static line with discrete chapter updates. Navigation
+works without JavaScript; the decorative thread is omitted from print.
+
+Reference study: [Brittany Chiang](https://brittanychiang.com/),
+[Rauno Freiberg](https://rauno.me/), and [Bruno Simon](https://bruno-simon.com/).
+These informed the direction toward clear navigation, careful interaction, and a
+continuous journey. The implementation and visual treatment here are original.
+
+Browser validation: Chromium at 320x740, 375x812, 768x1024, 1009x640, 1440x900,
+and 1920x1080. All six chapter links, header clearance, horizontal overflow, 44px
+chapter targets, disclosure expansion/collapse, pause, OS reduced motion, dark theme,
+print, JavaScript-disabled navigation and browser errors were checked. The existing
+disclosure regression checks also pass.

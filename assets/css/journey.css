@@ -1,0 +1,111 @@
+/* A continuous margin rule and a chapter map tie the broadsheet together. */
+html { scroll-padding-top: var(--reading-offset, 9rem); }
+#main { position: relative; }
+#main > .section, .masthead { position: relative; }
+.runhead__tools { margin-left: auto; }
+.masthead { min-height: min(calc(100svh - 8rem), 44rem); }
+
+.chapter-nav {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter) 0.35rem;
+  isolation: isolate;
+}
+.chapter-nav__track {
+  position: absolute;
+  top: 0.8rem;
+  left: calc(var(--gutter) + (100% - 2 * var(--gutter)) / 12);
+  right: calc(var(--gutter) + (100% - 2 * var(--gutter)) / 12);
+  height: 1px;
+  background: var(--rule);
+  z-index: -1;
+}
+.chapter-nav__track span { display: block; height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: left; }
+.chapter-nav a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  gap: 0.12rem;
+  min-height: 44px;
+  color: var(--ink-3);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  line-height: 1.4;
+}
+.chapter-nav__number {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--paper);
+  font-size: 0.6rem;
+}
+.chapter-nav a.is-passed .chapter-nav__number { border-color: var(--accent); color: var(--accent-text); }
+.chapter-nav a[aria-current] { color: var(--accent-text); }
+.chapter-nav a[aria-current] .chapter-nav__number { background: var(--accent-text); color: var(--paper); border-color: var(--accent-text); }
+.chapter-nav a:is(:hover, :focus-visible) { color: var(--accent-text); }
+.chapter-nav a:is(:hover, :focus-visible) .chapter-nav__number { border-color: var(--accent); }
+
+.reading-thread {
+  display: none;
+  position: absolute;
+  inset: 0 auto auto 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.reading-thread.is-ready { display: block; }
+.reading-thread__track, .reading-thread__ink { fill: none; stroke-width: 1.5; }
+.reading-thread__track { stroke: var(--rule); }
+.reading-thread__ink { stroke: var(--accent); }
+.reading-thread [data-thread-stops] circle { fill: var(--paper); stroke: var(--rule); stroke-width: 1.5; }
+.reading-thread [data-thread-stops] circle.is-passed { stroke: var(--accent); fill: var(--accent); }
+.reading-thread__cursor { fill: var(--accent); stroke: var(--paper); stroke-width: 2; }
+.section__head { position: relative; }
+.section__head::before {
+  content: '';
+  position: absolute;
+  top: 11px;
+  right: calc(100% + 8px);
+  width: max(0px, calc(var(--gutter) / 2 - 12px));
+  height: 1px;
+  background: var(--rule);
+}
+.is-current-chapter .section__head::before { background: var(--accent); }
+.is-current-chapter .section__head { border-top-color: var(--accent); }
+
+@media (min-width: 60rem) {
+  .runhead__inner { padding-block: 0.5rem; }
+  .chapter-nav { max-width: 52rem; padding-bottom: 0.25rem; }
+  .chapter-nav a { font-size: var(--step--2); }
+}
+@media (max-width: 25rem) {
+  .chapter-nav { padding-inline: 0.75rem; }
+  .chapter-nav__track { left: calc(0.75rem + (100% - 1.5rem) / 12); right: calc(0.75rem + (100% - 1.5rem) / 12); }
+  .chapter-nav a { font-size: 0.6rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chapter-nav__number { transition: background var(--dur-fast), border-color var(--dur-fast), color var(--dur-fast); }
+  .section__head { transition: border-color var(--dur); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reading-thread__cursor { display: none; }
+}
+:root[data-motion='off'] .reading-thread__cursor { display: none; }
+@media print {
+  .reading-thread, .chapter-nav, .section__head::before { display: none !important; }
+}
+
+/* Keep the introduction and facts together on short laptop viewports. */
+@media (max-height: 46rem) and (min-width: 48rem) {
+  .masthead { min-height: 0; padding-top: clamp(1.25rem, 3vh, 2rem); }
+  .masthead__name { font-size: clamp(3.6rem, min(13.5vw, 17vh), 15rem); }
+  .masthead__foot { padding-top: 1.25rem; }
+  .masthead__facts > div { padding-block: 0.5rem; }
+}

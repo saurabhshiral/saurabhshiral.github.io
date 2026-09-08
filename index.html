@@ -25,6 +25,7 @@
 <link rel="preload" href="assets/fonts/geist.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/css/tokens.css">
 <link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/journey.css">
 
 <script type="application/ld+json">
 {
@@ -81,14 +82,6 @@
       <span class="runhead__initials" aria-hidden="true">SS</span>
       <span>Saurabh Shiral</span>
     </a>
-    <nav class="runhead__nav" aria-label="Sections">
-      <a href="#about">About</a>
-      <a href="#features">Work</a>
-      <a href="#index">Index</a>
-      <a href="#practice">Practice</a>
-      <a href="#stack">Stack</a>
-      <a href="#contact">Contact</a>
-    </nav>
     <div class="runhead__tools">
       <button class="cmdk-hint" data-cmdk-open type="button" aria-label="Open command palette">
         <span class="cmdk-hint__label">Search</span>
@@ -103,10 +96,25 @@
       </button>
     </div>
   </div>
+  <nav class="chapter-nav" aria-label="Chapters">
+    <div class="chapter-nav__track" aria-hidden="true"><span data-chapter-progress></span></div>
+    <a href="#about"><span class="chapter-nav__number">01</span><span>About</span></a>
+    <a href="#features"><span class="chapter-nav__number">02</span><span>Work</span></a>
+    <a href="#index"><span class="chapter-nav__number">03</span><span>Index</span></a>
+    <a href="#practice"><span class="chapter-nav__number">04</span><span>Practice</span></a>
+    <a href="#stack"><span class="chapter-nav__number">05</span><span>Stack</span></a>
+    <a href="#contact"><span class="chapter-nav__number">06</span><span>Contact</span></a>
+  </nav>
   <div class="progress"><span class="progress__bar" data-progress></span></div>
 </header>
 
 <main id="main">
+<svg class="reading-thread" data-reading-thread aria-hidden="true" focusable="false">
+  <path class="reading-thread__track" data-thread-track/>
+  <path class="reading-thread__ink" data-thread-ink/>
+  <g data-thread-stops></g>
+  <circle class="reading-thread__cursor" data-thread-cursor r="4"/>
+</svg>
 <span id="top"></span>
 
 <!-- ══ Masthead ═══════════════════════════════════════════════════════════ -->
@@ -809,5 +817,6 @@
 </dialog>
 
 <script src="assets/js/main.js" defer></script>
+<script src="assets/js/journey.js" defer></script>
 </body>
 </html>
